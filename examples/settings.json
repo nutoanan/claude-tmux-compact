@@ -1,0 +1,57 @@
+{
+  "//": "Merge the `hooks` block below into your ~/.claude/settings.json.",
+  "//2": "Replace REPO_DIR with the absolute path to this repo (install.sh does this for you and writes settings.generated.json).",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/rehydrate.sh" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/context-guard.sh stop" },
+          { "type": "command", "command": "bash REPO_DIR/hooks/fire-compact.sh" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/context-guard.sh prompt" }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "manual",
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/log-compaction.sh pre manual" }
+        ]
+      },
+      {
+        "matcher": "auto",
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/log-compaction.sh pre auto" }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "manual",
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/log-compaction.sh post manual" }
+        ]
+      },
+      {
+        "matcher": "auto",
+        "hooks": [
+          { "type": "command", "command": "bash REPO_DIR/hooks/log-compaction.sh post auto" }
+        ]
+      }
+    ]
+  }
+}

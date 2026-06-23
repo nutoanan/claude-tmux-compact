@@ -1,0 +1,5 @@
+CONTEXT CRITICAL (~{CTX}k tokens). Do NOT blanket-compact — classify the boundary first:
+- TERMINUS (work is done, nothing queued): STOP and summarize. Do NOT compact — a terminus carries nothing forward.
+- CONTINUATION (known next work, or the user said continue): compact THEN proceed. Order is confirm-continuation -> compact -> work. Call request-compact.sh "<state + next action>" and END the turn.
+- GREY ZONE (only optional/suggested follow-up): ask the user first; compact only after they confirm.
+Iron rule: a self-compact fires ONLY when there is a known continuation to resume into, and is ALWAYS followed by it.

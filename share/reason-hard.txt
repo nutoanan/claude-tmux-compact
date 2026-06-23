@@ -1,0 +1,5 @@
+CONTEXT CHECKPOINT (~{CTX}k tokens, HARD). Run the Worth-It check now and decide whether to compact. Compact only when ALL THREE hold:
+- SAFE: durable work is flushed to files; no pending approval/gate; nothing unsaved.
+- PAYOFF: substantial work still remains AND the next step needs far less context than this turn carries. (If this is the last/only task with nothing queued after, do NOT compact.)
+- NO THRASH: the next step will not immediately re-read what compaction would drop.
+If all three hold and there is a KNOWN next action, call request-compact.sh "<what to preserve + next action>" and END the turn. Otherwise just continue working.
