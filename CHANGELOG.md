@@ -22,3 +22,7 @@ All notable changes to this project are documented here. The format is based on
   non-destructive `install.sh`.
 - Documentation: README + INSTALL, ARCHITECTURE, CONFIGURATION, RULES,
   TROUBLESHOOTING.
+- Portable end-to-end test harness (`test/e2e.sh`): 21 checks covering the
+  context-guard tiers, logging, installer, and the real tmux path (pane
+  resolution, `/compact` send-keys, stale-flag discard, auto-continue).
+  Verified on macOS bash 3.2/5.2 + tmux.
