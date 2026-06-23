@@ -243,6 +243,6 @@ claude-tmux-compact/
 
 ## License
 
-[MIT](LICENSE) © papa_csharp.
+[MIT](LICENSE) © papa_csharp — maintained at [github.com/nutoanan/claude-tmux-compact](https://github.com/nutoanan/claude-tmux-compact) (GitHub: [@nutoanan](https://github.com/nutoanan)).
 
 `#ClaudeCode #AIAgent #Automation #tmux #DevTools #AIengineering #autocompaction`
