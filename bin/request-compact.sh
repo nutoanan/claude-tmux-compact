@@ -16,6 +16,7 @@
 # work, so resuming is the right default; pass `no-continue` to opt out.
 set -u
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+[ -f "$DIR/../lib/common.sh" ] || { echo "claude-tmux-compact: missing $DIR/../lib/common.sh — keep the repo intact and run from <repo>/bin (re-run install.sh)." >&2; exit 1; }
 . "$DIR/../lib/common.sh"
 
 instr="${1:-}"

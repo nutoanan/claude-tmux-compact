@@ -130,9 +130,11 @@ sequenceDiagram
 
 ## The rules you teach Claude
 
-The hooks are the mechanism; these rules (in your `~/.claude/CLAUDE.md`) are the
-policy. Full text with the *why* behind each — in English and Thai — is in
-[docs/RULES.md](docs/RULES.md).
+The hooks are the mechanism; the policy is what tells the model *when/how* to
+compact. `install.sh` writes it to `compaction-policy.generated.md` and
+`@imports` it from your `~/.claude/CLAUDE.md` — you don't paste anything. The
+model-facing source is `share/compaction-policy.md`; the full text with the *why*
+behind each rule — in English and Thai — is in [docs/RULES.md](docs/RULES.md).
 
 ```text
 Compact only when ALL THREE hold: SAFE, PAYOFF, and NO THRASH.
@@ -173,18 +175,26 @@ Six touchpoints plus the model-side trigger. Details in
 ```bash
 git clone https://github.com/nutoanan/claude-tmux-compact.git
 cd claude-tmux-compact
-./install.sh
+./install.sh          # one shot — wires up everything, backs up first
+exec $SHELL           # reload your shell rc
+cc                    # launch Claude inside tmux
 ```
 
-Then:
+`install.sh` does all three halves for you, idempotently (safe to re-run) and with
+a timestamped backup of every file it touches:
 
-1. Merge the generated `examples/settings.generated.json` hooks block into
-   `~/.claude/settings.json`.
-2. `source /path/to/claude-tmux-compact/shell/cc.sh` in your shell rc, and launch
-   Claude with `cc` (this guarantees you're in tmux).
-3. Add the rules from [docs/RULES.md](docs/RULES.md) to your `~/.claude/CLAUDE.md`.
+1. **mechanism** — merges the hooks into `~/.claude/settings.json`,
+2. **policy** — generates `compaction-policy.generated.md` and `@imports` it from
+   `~/.claude/CLAUDE.md` (so the model knows *when/how* to compact),
+3. **launcher** — `source`s `shell/cc.sh` from your shell rc, so `cc` runs Claude
+   inside tmux.
 
-Full walkthrough and verification: [docs/INSTALL.md](docs/INSTALL.md).
+> Installing only the hooks does nothing — the model never calls the trigger, so
+> there's no flag for the Stop hook to fire. That's why both halves are wired
+> together. Prefer to do it by hand? `./install.sh --print` writes the snippets
+> and prints the steps without modifying anything.
+
+Full walkthrough, manual install, and uninstall: [docs/INSTALL.md](docs/INSTALL.md).
 
 ---
 

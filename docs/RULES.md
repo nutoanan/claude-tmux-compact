@@ -1,12 +1,18 @@
-# Rules to add to your CLAUDE.md
+# Rules: the compaction policy
 
 The hooks are the **mechanism**. These rules are the **policy** — they tell the
-model *when* and *how* to compact. Paste the English blocks into your global
-`~/.claude/CLAUDE.md` (the model works most reliably in English). Each rule
-includes *why* it exists, in English and Thai.
+model *when* and *how* to compact.
 
-> Adjust the trigger path to where you cloned the repo
-> (`/abs/path/bin/request-compact.sh`).
+> **You usually don't paste anything.** `./install.sh` already generates
+> `compaction-policy.generated.md` (a tight, model-facing version of these rules,
+> with the real trigger path baked in) and `@imports` it from your
+> `~/.claude/CLAUDE.md`. This file is the *human* reference — the *why* behind
+> each rule, in English and Thai. Read it to understand or tune the policy; edit
+> `share/compaction-policy.md` to change what the model is actually told.
+
+If you wire things up by hand (`./install.sh --print`), paste the English blocks
+below into your global `~/.claude/CLAUDE.md` and adjust the trigger path to where
+you cloned the repo (`/abs/path/bin/request-compact.sh`).
 
 ---
 

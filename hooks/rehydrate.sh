@@ -12,6 +12,7 @@
 # Registered in settings.json under SessionStart with matcher "compact".
 set -u
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+[ -f "$DIR/../lib/common.sh" ] || { echo "claude-tmux-compact: missing $DIR/../lib/common.sh — keep the repo intact and point hooks at <repo>/hooks (re-run install.sh)." >&2; exit 0; }
 . "$DIR/../lib/common.sh"
 
 payload="$(ctc_read_payload)"

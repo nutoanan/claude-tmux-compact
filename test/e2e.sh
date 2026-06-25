@@ -50,8 +50,8 @@ echo '{"session_id":"x","cwd":"/p"}' | bash "$REPO/hooks/log-compaction.sh" pre 
 env -u TMUX -u CTC_HOME bash "$REPO/bin/request-compact.sh" "x" >/tmp/rc.out 2>&1; rc=$?
 [ "$rc" -eq 1 ] && grep -q '/compact x' /tmp/rc.out && ok "non-tmux fallback (exit1 + paste block)" || no "fallback" "rc=$rc"
 
-# A8 install.sh generates valid settings
-( cd "$REPO" && ./install.sh >/dev/null 2>&1 )
+# A8 install.sh generates valid settings (--print: never touches real ~/.claude)
+( cd "$REPO" && ./install.sh --print >/dev/null 2>&1 )
 python3 -m json.tool "$REPO/examples/settings.generated.json" >/dev/null 2>&1 && ! grep -q REPO_DIR "$REPO/examples/settings.generated.json" && ok "install: valid settings, path filled" || no "install" "bad json or placeholder"
 
 # A9 rehydrate stdout injection (resume file) - no tmux needed
