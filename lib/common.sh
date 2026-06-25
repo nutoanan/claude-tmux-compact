@@ -35,14 +35,25 @@ ctc_mtime() {
   printf '%s' "${m:-0}"
 }
 
-# Resolve the tmux pane id for the process tree this hook runs in.
-# A Claude Code hook inherits the controlling tty of the `claude` process,
-# which is the pty of its tmux pane. $TMUX_PANE is NOT inherited by hook
-# subprocesses, so we map via the controlling tty, not the env var.
+# Resolve the tmux pane id for the process tree this code runs in.
+# Two complementary paths, because the two callers differ:
+#   - Hooks (Stop/SessionStart/...) inherit the controlling tty of the `claude`
+#     process — the pty of its tmux pane — so the tty->pane map below works.
+#   - request-compact.sh run via the model's Bash tool often has NO controlling
+#     tty (ps reports '??'), so the tty map fails there. But that bash DOES
+#     inherit $TMUX_PANE from claude's env, so we trust it as a fast path —
+#     verified against the live pane list to reject a stale/dead pane.
 # Prints the pane id (e.g. %3) and returns 0, or returns 1 if not in tmux.
 ctc_resolve_pane() {
   command -v tmux >/dev/null 2>&1 || return 1
   local tty pane_id pane_tty
+  # Fast path: trust $TMUX_PANE when we are genuinely inside tmux ($TMUX set —
+  # tmux always sets both together) and the pane is still present in the list.
+  # Requiring $TMUX rejects a stale/leaked $TMUX_PANE from outside any pane.
+  if [ -n "${TMUX:-}" ] && [ -n "${TMUX_PANE:-}" ] \
+     && tmux list-panes -a -F '#{pane_id}' 2>/dev/null | grep -qxF "$TMUX_PANE"; then
+    printf '%s' "$TMUX_PANE"; return 0
+  fi
   tty="$(ps -o tty= -p "$$" 2>/dev/null | tr -d ' ')"
   [ -n "$tty" ] && [ "$tty" != "??" ] || return 1
   while IFS=' ' read -r pane_id pane_tty; do

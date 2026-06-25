@@ -23,6 +23,12 @@ All notable changes to this project are documented here. The format is based on
   "copied only the hooks/ dir" pitfall).
 
 ### Fixed
+- **Pane resolution failed in the model's Bash tool** (`ps` reports `??` for the
+  controlling tty), so `request-compact.sh` invoked the documented way printed
+  "NOT in tmux" and never queued a compaction. `ctc_resolve_pane` now has a
+  `$TMUX_PANE` fast path (guarded by `$TMUX` + a live pane-list check) that wins
+  when the tty is unavailable, falling back to the tty map for hooks. Covered by
+  a new e2e case.
 - Onboarding gap where merging only the `hooks` block (without the policy) left
   the model never calling the trigger — "it doesn't compact by itself". The
   one-shot installer wires both halves.

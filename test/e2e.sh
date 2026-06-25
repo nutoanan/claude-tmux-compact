@@ -73,6 +73,13 @@ if ! command -v tmux >/dev/null 2>&1; then echo "  SKIP  tmux not available"; el
   sleep 0.6
   [ "$(cat "$H/resolved" 2>/dev/null)" = "$PANE" ] && ok "ctc_resolve_pane = $PANE" || no "pane resolve" "got '$(cat "$H/resolved" 2>/dev/null)' want $PANE"
 
+  # B1b Bash-tool path: no controlling tty (ps -> '??') but $TMUX/$TMUX_PANE are
+  # set (as inside any pane). Shadow `ps` so the tty map MUST fail; only the
+  # TMUX_PANE fast path can win. Runs inside the pane so TMUX env is the real one.
+  inpane "ps(){ printf '??'; }; . $REPO/lib/common.sh; ctc_resolve_pane > $H/resolved_fast 2>&1"
+  sleep 0.6
+  [ "$(cat "$H/resolved_fast" 2>/dev/null)" = "$PANE" ] && ok "ctc_resolve_pane via \$TMUX_PANE when tty is '??'" || no "TMUX_PANE fast path" "got '$(cat "$H/resolved_fast" 2>/dev/null)' want $PANE"
+
   # B2 request-compact writes flag + continue marker (run inside pane)
   inpane "export CTC_HOME=$H; bash $REPO/bin/request-compact.sh 'KEEPTOK next=do-X'"
   sleep 0.6
